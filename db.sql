@@ -20,3 +20,6 @@ CREATE TABLE IF NOT EXISTS products (
     price DECIMAL(10, 2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE users 
+ADD COLUMN role ENUM('admin', 'user') NOT NULL DEFAULT 'user';

@@ -2,26 +2,29 @@
 session_start();
 require 'db.php';
 
+$message = '';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    try {
-        $sql = "SELECT * FROM users WHERE email = :email";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute([':email' => $email]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    // Check if the user exists
+    $sql = "SELECT * FROM users WHERE email = :email";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([':email' => $email]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            header("Location: dashboard.php");
-            exit();
-        } else {
-            $error = "Invalid email or password.";
-        }
-    } catch (PDOException $e) {
-        $error = "Error: " . $e->getMessage();
+    if ($user && password_verify($password, $user['password'])) {
+        // Store user info in the session
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['role'] = $user['role'];
+
+        // Redirect based on role
+       
+        exit();
+    } else {
+        $message = 'Invalid email or password.';
     }
 }
 ?>
@@ -36,9 +39,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body class="bg-light">
     <div class="container mt-5">
-        <h2>Login</h2>
-        <?php if (isset($error)) echo "<div class='alert alert-danger'>$error</div>"; ?>
-
+        <h2 class="mb-4">Login</h2>
+        <?php if ($message): ?>
+            <div class="alert alert-danger"><?php echo $message; ?></div>
+        <?php endif; ?>
         <form method="POST" action="login.php">
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
@@ -49,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="password" name="password" id="password" class="form-control" required>
             </div>
             <button type="submit" class="btn btn-primary">Login</button>
-        </form>
+       </form>
     </div>
 </body>
 </html>

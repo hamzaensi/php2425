@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id'])) {
-    header("");
+    header("location:login.php");
     exit();
 }
 
@@ -20,7 +20,9 @@ $username = $_SESSION['username'];
     <div class="container mt-5">
         <h2>Welcome, <?php echo htmlspecialchars($username); ?>!</h2>
         <a href="logout.php" class="btn btn-danger mt-3">Logout</a>
-        <a href="product" class="btn btn-primary mt-3">Product Management</a>
+        <a href="admin_dashboard.php" class="btn btn-primary mt-3">Admin Dashboard</a>
+        <a href="user_dashboard.php" class="btn btn-primary mt-3">User Dashboard</a>
+    
     </div>
 </body>
 </html>

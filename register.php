@@ -1,26 +1,30 @@
 <?php
 require 'db.php';
 
+$message = '';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $email = $_POST['email'];
-    $password = $_POST['password'];
+    $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+    $role = isset($_POST['role']) ? $_POST['role'] : 'user'; // Default role is 'user'
 
-    // Hash the password
-    $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+    // Check for duplicate email or username
+    $sqlCheck = "SELECT * FROM users WHERE email = :email OR username = :username";
+    $stmtCheck = $conn->prepare($sqlCheck);
+    $stmtCheck->execute([':email' => $email, ':username' => $username]);
 
-    try {
-        $sql = "INSERT INTO users (username, email, password) VALUES (:username, :email, :password)";
+    if ($stmtCheck->rowCount() > 0) {
+        $message = 'Email or Username already exists.';
+    } else {
+        // Insert new user into the database
+        $sql = "INSERT INTO users (username, email, password, role) VALUES (:username, :email, :password, :role)";
         $stmt = $conn->prepare($sql);
-        $stmt->execute([
-            ':username' => $username,
-            ':email' => $email,
-            ':password' => $hashedPassword,
-        ]);
-
-        $success = "Registration successful!";
-    } catch (PDOException $e) {
-        $error = "Error: " . $e->getMessage();
+        if ($stmt->execute([':username' => $username, ':email' => $email, ':password' => $password, ':role' => $role])) {
+            $message = 'User successfully registered!';
+        } else {
+            $message = 'Failed to register user.';
+        }
     }
 }
 ?>
@@ -35,10 +39,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body class="bg-light">
     <div class="container mt-5">
-        <h2>Register</h2>
-        <?php if (isset($success)) echo "<div class='alert alert-success'>$success</div>"; ?>
-        <?php if (isset($error)) echo "<div class='alert alert-danger'>$error</div>"; ?>
-
+        <h2 class="mb-4">Register</h2>
+        <?php if ($message): ?>
+            <div class="alert <?php echo ($message === 'User successfully registered!') ? 'alert-success' : 'alert-danger'; ?>">
+                <?php echo $message; ?>
+            </div>
+        <?php endif; ?>
         <form method="POST" action="register.php">
             <div class="mb-3">
                 <label for="username" class="form-label">Username</label>
@@ -52,7 +58,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="password" class="form-label">Password</label>
                 <input type="password" name="password" id="password" class="form-control" required>
             </div>
+           
             <button type="submit" class="btn btn-primary">Register</button>
+            <a href="login.php" class="btn btn-primary">Login</a>
         </form>
     </div>
 </body>

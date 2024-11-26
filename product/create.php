@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ':price' => $price,
     ]);
 
-    header("Location: index.php");
+   
     exit();
 }
 ?>
@@ -43,7 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="price" class="form-label">Price</label>
                 <input type="number" name="price" id="price" class="form-control" step="0.01" required>
             </div>
-            <button type="submit" class="btn btn-primary">Add Product</button>
         </form>
     </div>
 </body>

@@ -2,7 +2,7 @@
 require 'db.php';
 
 // Fetch all products
-$sql = "SELECT * FROM ";
+$sql = "SELECT * FROM products";
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -19,7 +19,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body class="bg-light">
     <div class="container mt-5">
         <h2 class="mb-4">Product Management</h2>
-        <a href="" class="btn btn-primary mb-3">Add New Product</a>
+        <a class="btn btn-primary mb-3">Add New Product</a>
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
@@ -38,8 +38,6 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <td><?php echo htmlspecialchars($product['description']); ?></td>
                         <td><?php echo $product['price']; ?></td>
                         <td>
-                            <a href="?id=<?php echo $product['id']; ?>" class="btn btn-warning btn-sm">Edit</a>
-                            <a href="?id=<?php echo $product['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">Delete</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
