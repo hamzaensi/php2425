@@ -1,0 +1,18 @@
+1- créer la base des données + les tables "db.sql"
+2- configurer le fichier "db.php"
+3- compléter le code pour register(select role)- login - logout 
+3.1 : dans le fichier index.php 
+      il faut une rédirection vers login.php 
+      une fois l'utilisateur non connecté 
+3.2 : dans la page login.php ajouter un lien 
+      vers la page register.php
+3.3 : après register il faut une redirection vers la page login.php
+3.4 : après login il faut une redirection vers admin Dashboard ou user Dashbord
+3.5 : un user ne peut pas accéder sur le Dashboard admin (il controler ça) 
+3.6 : après logout il faut une rédirection vers login.php
+
+4- compléter le CRUD de product à partir de Dashboard Admin
+4.1 : afficher dans un tableau html 
+4.2 : ajouter un nouveau produit 
+4.3 : editer un produit
+4.4 : supprimer un produit
